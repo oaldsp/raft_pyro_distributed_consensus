@@ -1,2 +1,2 @@
 # raft_pyro_distributed_consensus
-Implementação do algoritmo de consenso Raft utilizando PyRO para eleição de líder, replicação de logs e tolerância a falhas em sistemas distribuídos.
+Este projeto implementa o algoritmo de consenso Raft em Python utilizando PyRO (Python Remote Objects) para a comunicação entre processos distribuídos. A aplicação simula um cluster composto por quatro nós que realizam eleição de líder, replicação de logs, envio de heartbeats, confirmação de operações por maioria e recuperação automática em caso de falha do líder. Além disso, um cliente é responsável por localizar o líder através do servidor de nomes do PyRO e encaminhar comandos para serem replicados de forma consistente entre os nós do sistema.
