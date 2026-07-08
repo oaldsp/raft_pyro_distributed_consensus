@@ -375,8 +375,8 @@ class RaftNode(raft_pb2_grpc.ConsensusServiceServicer, raft_pb2_grpc.AppServiceS
 
     async def ConsumeData(self, request: raft_pb2.ConsumeRequest, context: grpc.aio.ServicerContext):
         async with self.lock:
-            if self.role != "leader":
-                return raft_pb2.ConsumeResponse(success=False, leader_id=self.leader_id or "", committed_data=[])
+            #if self.role != "leader":
+            #    return raft_pb2.ConsumeResponse(success=False, leader_id=self.leader_id or "", committed_data=[])
             
             # Requisito: Apenas dados efetivados (committed) poderão ser retornados.
             committed_data = await asyncio.to_thread(self.storage.get_committed_data)
