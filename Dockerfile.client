@@ -1,0 +1,12 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+# Inicializa o projeto e instala os pacotes do gRPC
+RUN npm init -y && npm install @grpc/grpc-js @grpc/proto-loader
+
+# Copia o contrato e o script do cliente
+COPY raft.proto client.js ./
+
+# Executa o cenário de demonstração
+CMD ["node", "client.js"]

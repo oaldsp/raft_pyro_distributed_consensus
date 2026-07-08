@@ -1,0 +1,17 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+# Instala as dependências
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copia os arquivos necessários
+COPY raft.proto raft_server.py storage.py ./
+
+# Compila o arquivo .proto internamente na imagem
+# O comando abaixo gera os arquivos raft_pb2.py e raft_pb2_grpc.py a partir do arquivo raft.proto.
+RUN python -m grpc_tools.protoc -I. --python_out=. --grpc_python_out=. raft.proto
+
+# O CMD será sobrescrito pelo docker-compose para passar o node_id
+ENTRYPOINT ["python3", "raft_server.py"]

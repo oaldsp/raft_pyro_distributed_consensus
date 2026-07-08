@@ -1,12 +1,61 @@
+version: '3.8'
+
 services:
-  raft:
-    build: .
-    container_name: raft-pyro
-    stdin_open: true
-    tty: true
+  node1:
+    build: 
+      context: .
+      dockerfile: Dockerfile.server
+    command: ["node1"]
     ports:
-      - "9090:9090"
       - "5001:5001"
+    networks:
+      - raft-network\
+
+  node2:
+    build: 
+      context: .
+      dockerfile: Dockerfile.server
+    command: ["node2"]
+    ports:
       - "5002:5002"
+    networks:
+      - raft-network
+
+  node3:
+    build: 
+      context: .
+      dockerfile: Dockerfile.server
+    command: ["node3"]
+    ports:
       - "5003:5003"
+    networks:
+      - raft-network
+
+  node4:
+    build: 
+      context: .
+      dockerfile: Dockerfile.server
+    command: ["node4"]
+    ports:
       - "5004:5004"
+    networks:
+      - raft-network
+
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile.client
+    # O cliente não sobe automaticamente, executaremos sob demanda
+    profiles:
+      - manual
+    networks:
+      - raft-network
+    #depends_on:
+      #- node1
+      #- node2
+      #- node3
+      #- node4
+
+networks:
+  raft-network:
+    driver: bridge
