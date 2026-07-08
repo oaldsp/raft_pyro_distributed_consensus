@@ -1,0 +1,9 @@
+.git
+.agents
+.codex
+__pycache__/
+*.py[cod]
+*.log
+.pytest_cache/
+.venv/
+venv/

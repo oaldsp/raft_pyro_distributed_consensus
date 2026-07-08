@@ -1,0 +1,12 @@
+services:
+  raft:
+    build: .
+    container_name: raft-pyro
+    stdin_open: true
+    tty: true
+    ports:
+      - "9090:9090"
+      - "5001:5001"
+      - "5002:5002"
+      - "5003:5003"
+      - "5004:5004"
