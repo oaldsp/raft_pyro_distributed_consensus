@@ -9,7 +9,7 @@ services:
     ports:
       - "5001:5001"
     networks:
-      - raft-network\
+      - raft-network
 
   node2:
     build: 
