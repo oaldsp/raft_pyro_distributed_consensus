@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package raft;
+
+// ---------------------------------------------------------
+// Serviço de Aplicação (Exposto ao Cliente Node.js)
+// ---------------------------------------------------------
+service AppService {
+  // Publica um novo dado no cluster
+  rpc PublishData (PublishRequest) returns (PublishResponse);
+  
+  // Consome os dados efetivados (committed)
+  rpc ConsumeData (ConsumeRequest) returns (ConsumeResponse);
+}
+
+message PublishRequest {
+  string command = 1;
+}
+
+message PublishResponse {
+  bool success = 1;
+  string leader_id = 2; // Usado para redirecionamento caso o nó não seja o líder
+  int32 index = 3;
+}
+
+message ConsumeRequest {}
+
+message ConsumeResponse {
+  bool success = 1;
+  string leader_id = 2; // Usado para alertar quem é o líder atual, se necessário
+  repeated string committed_data = 3; // Retorna APENAS dados efetivados
+}
+
+// ---------------------------------------------------------
+// Serviço de Consenso (Uso Exclusivo Interno do Cluster)
+// ---------------------------------------------------------
+service ConsensusService {
+  rpc RequestVote (VoteRequest) returns (VoteResponse);
+  rpc AppendEntries (AppendRequest) returns (AppendResponse);
+}
+
+message LogEntry {
+  int32 term = 1;
+  string command = 2;
+}
+
+message VoteRequest {
+  int32 term = 1;
+  string candidate_id = 2;
+  int32 last_log_index = 3;
+  int32 last_log_term = 4;
+}
+
+message VoteResponse {
+  int32 term = 1;
+  bool vote_granted = 2;
+}
+
+// Líder manda para os outros nós replicarem os logs e também serve como heartbeat
+message AppendRequest {
+  int32 term = 1;
+  string leader_id = 2;
+  int32 prev_log_index = 3;
+  int32 prev_log_term = 4;
+  repeated LogEntry entries = 5;
+  int32 leader_commit = 6;
+}
+
+message AppendResponse {
+  int32 term = 1;
+  bool success = 2;
+  int32 match_index = 3; // Essencial para o líder encontrar o último ponto consistente
+}
